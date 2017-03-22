@@ -5,10 +5,14 @@ Created on Tue Mar 21 13:49:36 2017
 @author: tiwarir
 """
 import numpy as np
+import sqlite3
+import os
 
+os.getcwd()
+os.chdir(os.path.join(os.getcwd(), "Documents", "Python Scripts", "recommender"))
+os.getcwd()
 
 ## creating the data for feeding into the data table
-
 gender_choice = ["M", "F"]
 age_choice = np.arange(10,65)
 income_choice = np.arange(0,5)
@@ -18,6 +22,7 @@ address_choice = ["Bedok", "Geylang", "Queenstown", "Kallang", "Bukit Merah", \
                  "Pasir Panjang", "Little India", "Boon Keng", "Buona Vista"]
 
 
+np.random.seed(10)
 gender =  np.random.choice(gender_choice, size = 15, replace = True)
 age = np.random.choice(age_choice, size = 15, replace = True)
 income= np.random.choice(income_choice, size = 15, replace = True)
@@ -27,11 +32,11 @@ address = np.random.choice(address_choice, size = 15, replace = True)
 user_id = np.arange(15)
 
 user_data = zip(user_id, first_name, age, gender, income, address)
+user_data[1]
 
 
 
-import sqlite3
- 
+### Creating database connection 
 conn = sqlite3.connect("mydatabase.db") # or use :memory: to put it in RAM
  
 cursor = conn.cursor()
@@ -45,10 +50,15 @@ cursor.execute("""CREATE TABLE user_profile
                   
 
 # insert some data
-cursor.execute("INSERT INTO user_profile VALUES (%d,%s,%d,%s,%d,%s)", (user_data[1]))
+cursor.execute("INSERT INTO user_profile VALUES (1, 'Anold', 10, 'F', 4, 'Little India')")
+cursor.execute("INSERT INTO user_profile VALUES (?, ?, ?, ?, ?, ?)", (2, 'Kate', 52, 'M', 1, 'Geylang'))
+cursor.execute("INSERT INTO user_profile VALUES (?, ?, ?, ?, ?, ?)", user_data[3])
+cursor.executemany("INSERT INTO user_profile VALUES (?,?,?,?,?,?)", user_data[4:])
+
  
 # save data to database
 conn.commit()
+conn.close()
 
 sql = """
 UPDATE albums 
