@@ -11,8 +11,9 @@ import os
 os.getcwd()
 os.chdir(os.path.join(os.getcwd(), "Documents", "Python Scripts", "recommender"))
 os.getcwd()
-
-## creating the data for feeding into the data table
+#########################################################################################
+## creating fictitious data for feeding into the data table
+###########################################################################################
 gender_choice = ["M", "F"]
 age_choice = np.arange(10,65)
 income_choice = np.arange(0,5)
@@ -33,10 +34,9 @@ user_id = np.arange(15)
 
 user_data = zip(user_id, first_name, age, gender, income, address)
 user_data[1]
-
-
-
-### Creating database connection 
+##############################################################################################
+# Creating database connection, and adding records to database
+############################################################################################## 
 conn = sqlite3.connect("mydatabase.db") # or use :memory: to put it in RAM
  
 cursor = conn.cursor()
@@ -55,77 +55,53 @@ cursor.execute("INSERT INTO user_profile VALUES (?, ?, ?, ?, ?, ?)", (2, 'Kate',
 cursor.execute("INSERT INTO user_profile VALUES (?, ?, ?, ?, ?, ?)", user_data[3])
 cursor.executemany("INSERT INTO user_profile VALUES (?,?,?,?,?,?)", user_data[4:])
 
- 
-# save data to database
 conn.commit()
 conn.close()
 
-sql = """
-UPDATE albums 
-SET artist = 'John Doe' 
-WHERE artist = 'Andy Hunter'
-"""
+###################################################################################################################### 
+# sql query
+#################################################################################################
+
+conn = sqlite3.connect("mydatabase.db")
+cursor = conn.cursor()
+sql = "SELECT * FROM user_profile WHERE user_id=1"
+cursor.execute(sql)
+print cursor.fetchall()
+conn.close()
+
+#####################################################################################
+# updating the record based on some condition
+#####################################################################################
+##Example 1
+conn = sqlite3.connect("mydatabase.db")
+cursor = conn.cursor()
+sql = """UPDATE user_profile
+         SET name = 'Arnold'
+         WHERE name == 'Anold'"""
 cursor.execute(sql)
 conn.commit()
+conn.close()
 
-
-
-
-
-
-
-
-
-
-
-
-
- 
-# insert multiple records using the more secure "?" method
-albums = [('Exodus', 'Andy Hunter', '7/9/2002', 'Sparrow Records', 'CD'),
-          ('Until We Have Faces', 'Red', '2/1/2011', 'Essential Records', 'CD'),
-          ('The End is Where We Begin', 'Thousand Foot Krutch', '4/17/2012', 'TFKmusic', 'CD'),
-          ('The Good Life', 'Trip Lee', '4/10/2012', 'Reach Records', 'CD')]
-cursor.executemany("INSERT INTO albums VALUES (?,?,?,?,?)", albums)
+##Example 2
+conn = sqlite3.connect("mydatabase.db")
+cursor = conn.cursor()
+sql = """UPDATE user_profile
+         SET name = 'Tiger'
+         WHERE user_id == 14"""
+cursor.execute(sql)
 conn.commit()
-
-
-                 
-
-
-
-
-
-
-
-
-
-import sqlite3
-conn = sqlite3.connect('test.db')
-conn.execute('''CREATE TABLE COMPANY
-       (ID INT PRIMARY KEY     NOT NULL,
-       NAME           TEXT    NOT NULL,
-       AGE            INT     NOT NULL,
-       ADDRESS        CHAR(50),
-       SALARY         REAL);''')
-print "Table created successfully";
-
-conn.execute("INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) \
-      VALUES (1, 'Paul', 32, 'California', 20000.00 )");
-
-conn.execute("INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) \
-      VALUES (2, 'Allen', 25, 'Texas', 15000.00 )");
-
-conn.execute("INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) \
-      VALUES (3, 'Teddy', 23, 'Norway', 20000.00 )");
-
-conn.execute("INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) \
-      VALUES (4, 'Mark', 25, 'Rich-Mond ', 65000.00 )");
-
-conn.commit()
-print "Records created successfully";
 conn.close()
 
 
-conn = sqlite3.connect('test.db')
-conn.close()
+
+
+
+
+
+
+
+
+
+
+
+
