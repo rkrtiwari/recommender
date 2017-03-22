@@ -92,6 +92,29 @@ cursor.execute(sql)
 conn.commit()
 conn.close()
 
+##Example3
+conn = sqlite3.connect("mydatabase.db")
+cursor = conn.cursor()
+newaddress = 'Bukit Panjang'
+user_id = 7
+sql = """UPDATE user_profile SET address = ? WHERE user_id == ?"""
+cursor.execute(sql, (newaddress, user_id))
+conn.commit()
+conn.close()
+
+
+###############################################################################
+# deleting record
+###############################################################################
+conn = sqlite3.connect("mydatabase.db")
+cursor = conn.cursor()
+delete_userid = 2
+sql = """DELETE FROM user_profile WHERE user_id == ?"""
+cursor.execute(sql, (delete_userid,))  # the comma at the end of the delete_userid
+                                       # is required otherwise it will not work 
+conn.commit()
+conn.close() 
+
 
 
 
