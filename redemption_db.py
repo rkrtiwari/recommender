@@ -40,8 +40,8 @@ cursor = conn.cursor()
 # create a table
 cursor.execute("""CREATE TABLE coupon_redemption
                   (coupon_id INT, user_id INT, 
-                    red_year INT, red_month INT,
-                    red_day INT) 
+                    year INT, month INT,
+                    day INT) 
                """)
                   
 
@@ -68,7 +68,7 @@ conn.close()
 conn = sqlite3.connect("mydatabase.db") 
 cursor = conn.cursor()
 
-sql = "SELECT * FROM coupon_redemption WHERE red_month = 1 AND red_day = 1"
+sql = "SELECT * FROM coupon_redemption WHERE month = 1 AND day = 1"
 cursor.execute(sql)
 all_row = cursor.fetchall()
 
