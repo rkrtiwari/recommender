@@ -28,3 +28,20 @@ df['rating'] = pd.Series(1, index=df.index)
 rating_matrix = df.pivot(index = "user_id", columns = "coupon_id", values = "rating")
 rating_matrix
 
+##############################################################################
+# updating rating matrix when a user redeems a coupon
+##############################################################################
+user_id = 14
+coupon_id = 14
+
+rating_matrix.loc[user_id, coupon_id] = 1
+
+#############################################################################
+# Updating rating matrix when a user views a coupon
+#############################################################################
+user_id = 14
+coupon_id = 13
+
+if (rating_matrix.loc[user_id, coupon_id] != 1):
+    rating_matrix.loc[user_id, coupon_id] = 0.7
+
