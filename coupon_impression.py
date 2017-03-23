@@ -12,6 +12,8 @@ import numpy as np
 
 os.getcwd()
 os.listdir(".")
+os.chdir(os.path.join("Documents", "Python Scripts", "recommender"))
+os.getcwd()
 
 #########################################################
 # Creating fictitous data
@@ -34,14 +36,18 @@ imp_data = zip(user_id, coupon_id, year, month, date)
 ##################################################################
 conn = sqlite3.connect('mydatabase.db')
 cursor = conn.cursor()
-#sql = """CREATE TABLE coupon_impression (
-#        user_id INT,
-#        coupon_id INT,
-#        imp_year INT,
-#        imp_month INT,
-#        imp_day INT)"""
 
+#sql = "DROP TABLE coupon_impression"
 #cursor.execute(sql)
+
+sql = """CREATE TABLE coupon_impression (
+        user_id INT,
+        coupon_id INT,
+        year INT,
+        month INT,
+        day INT)"""
+
+cursor.execute(sql)
 
 sql = "INSERT INTO coupon_impression VALUES (?,?,?,?,?)"          
 cursor.executemany(sql, imp_data)
