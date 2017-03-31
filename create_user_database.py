@@ -60,6 +60,59 @@ for record in records:
     print(record)
 conn.close()
 
+##############################################################################
+# Creating user profile data base encoded as one hot vector
+##############################################################################
+
+n_users = 5
+row_index = np.arange(n_users)
+
+## creation of some fictitous data
+age = np.zeros((n_users, 5))
+column_index = np.random.choice(5, size = n_users, replace = True)
+age[row_index, column_index] = 1
+
+gender = np.zeros((n_users, 2))
+column_index = np.random.choice(2, size = n_users, replace = True)
+gender[row_index, column_index] = 1
+
+income = np.zeros((n_users, 3))
+column_index = np.random.choice(3, size = n_users, replace = True)
+income[row_index, column_index] = 1
+
+user_data = np.concatenate((age, gender, income), axis = 1)
+
+## database operation
+conn = sqlite3.connect('user_info.db')
+cursor = conn.cursor()
+
+# creation of the table, done only once
+#sql = '''CREATE TABLE user_demographics (
+#        age1 INT, age2 INT, age3 INT, age4 INT, age5 INT,
+#        male INT, female INT,
+#        income_low INT, income_medium INT, income_high INT)'''
+#
+#cursor.execute(sql)
+
+## Inserting records into the table
+sql = '''INSERT INTO user_demographics VALUES
+         (?,?,?,?,?,?,?,?,?,?)'''
+         
+cursor.executemany(sql, user_data)
+conn.commit()
+conn.close()
+
+## Fetching records from the table
+conn = sqlite3.connect('user_info.db')
+cursor = conn.cursor()
+sql = '''SELECT * FROM user_demographics'''
+records = cursor.execute(sql)
+for record in records:
+    print record
+
+
+
+
 
 ###############################################################################
 # create user preference database
@@ -123,7 +176,7 @@ for record in records:
     print record
     
 conn.close()
-
+###############################################################################
 
 
 
