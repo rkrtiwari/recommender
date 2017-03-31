@@ -8,6 +8,11 @@ Created on Thu Mar 30 11:56:23 2017
 import os
 import sqlite3
 import numpy as np
+import pandas as pd
+
+#############################################################################
+# Setting up working directory
+############################################################################
 os.getcwd()
 os.chdir(os.path.join("Documents", "Python Scripts", "recommender"))
 os.listdir(".")
@@ -65,6 +70,8 @@ conn.close()
 ##############################################################################
 
 n_users = 5
+user_id = np.arange(n_users)
+user_id = user_id.reshape((-1,1))
 row_index = np.arange(n_users)
 
 ## creation of some fictitous data
@@ -80,7 +87,7 @@ income = np.zeros((n_users, 3))
 column_index = np.random.choice(3, size = n_users, replace = True)
 income[row_index, column_index] = 1
 
-user_data = np.concatenate((age, gender, income), axis = 1)
+user_data = np.concatenate((user_id, age, gender, income), axis = 1)
 
 ## database operation
 conn = sqlite3.connect('user_info.db')
@@ -88,6 +95,7 @@ cursor = conn.cursor()
 
 # creation of the table, done only once
 #sql = '''CREATE TABLE user_demographics (
+#        user_id INT,
 #        age1 INT, age2 INT, age3 INT, age4 INT, age5 INT,
 #        male INT, female INT,
 #        income_low INT, income_medium INT, income_high INT)'''
@@ -96,7 +104,7 @@ cursor = conn.cursor()
 
 ## Inserting records into the table
 sql = '''INSERT INTO user_demographics VALUES
-         (?,?,?,?,?,?,?,?,?,?)'''
+         (?,?,?,?,?,?,?,?,?,?,?)'''
          
 cursor.executemany(sql, user_data)
 conn.commit()
@@ -144,7 +152,7 @@ user_data = zip(user_id, chinese, japanese, western, indian, others, fashion,
 conn = sqlite3.connect('user_info.db')
 cursor = conn.cursor()
 
-## create the table, used only once
+# create the table, used only once
 #sql = """CREATE TABLE user_preference (
 #         user_id INT,
 #         chinese INT, japanese INT, western INT, indian INT, others INT, 
@@ -179,8 +187,18 @@ conn.close()
 ###############################################################################
 
 
+##############################################################################
+# reading user information from the database
+###############################################################
+conn = sqlite3.connect("user_info.db") 
+sql1 = "SELECT * FROM user_demographics"
+df1 = pd.read_sql_query(sql1, conn)
+sql2 = "SELECT * FROM user_preference"
+df2 = pd.read_sql_query(sql2, conn)
+conn.close()
 
-
+df = pd.merge(df1, df2, how = 'inner', on = 'user_id')
+df.iloc[1,:]
 
 
 
